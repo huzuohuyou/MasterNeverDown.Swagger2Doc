@@ -1,0 +1,60 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+	<PropertyGroup>
+		<OutputType>Exe</OutputType>
+<!--		<PublishSingleFile>true</PublishSingleFile>-->
+		<SelfContained>false</SelfContained>
+		<RuntimeIdentifier>win-x64</RuntimeIdentifier>
+
+		<AssemblyName>Swagger2Doc</AssemblyName>
+		<ToolCommandName>Swagger2Doc</ToolCommandName>
+		<PackageOutputPath>./nupkg</PackageOutputPath>
+		<PackAsTool>true</PackAsTool>
+		<TargetFramework>net6.0</TargetFramework>
+		<GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+		<PackageReadmeFile>README.md</PackageReadmeFile>
+		<Version>1.0.3</Version>
+		<Title>Swagger2Doc</Title>
+		<Authors>Hailong.WU</Authors>
+		<PackageProjectUrl>https://gitee.com/galacode/OpenAPI2MD.CommunityToolkit</PackageProjectUrl>
+		<license>https://gitee.com/galacode/OpenAPI2MD.CommunityToolkit/blob/main/LICENSE</license>
+		<PackageLicenseUrl>https://gitee.com/galacode/OpenAPI2MD.CommunityToolkit/blob/main/LICENSE</PackageLicenseUrl>
+		<RepositoryUrl>https://gitee.com/galacode/OpenAPI2MD.CommunityToolkit.git</RepositoryUrl>
+		<PackageTags>swagger,api,openapi.md</PackageTags>
+		<AssemblyVersion>1.0.1</AssemblyVersion>
+		<FileVersion>1.0.1</FileVersion>
+		<RootNamespace>OpenApi2Doc.CommunityToolkit.Command</RootNamespace>
+	</PropertyGroup>
+
+	<PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+	  <PlatformTarget>x64</PlatformTarget>
+	  <DebugType>full</DebugType>
+	</PropertyGroup>
+
+	<ItemGroup>
+	  <PackageReference Include="System.CommandLine" Version="2.0.0-beta4.22272.1" />
+	</ItemGroup>
+
+	<ItemGroup>
+		<ProjectReference Include="..\MasterNeverDown.Swagger2Doc\MasterNeverDown.Swagger2Doc.csproj" />
+		<ProjectReference Include="..\OpenAPI2MD.CommunityToolkit\MasterNeverDown.Swagger2Md.csproj" />
+		<ProjectReference Include="..\OpenAPI2Word.CommunityToolkit\MasterNeverDown.Swagger2Word.csproj" />
+	</ItemGroup>
+
+	<ItemGroup>
+        <None Include="docs\README.md" Pack="true" PackagePath="\"/>
+        <None Update="docs\jb_beam.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\Snipaste_2022-10-18_19-07-05.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\Snipaste_2022-10-18_19-07-39.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+        <None Update="docs\Snipaste_2022-10-18_19-09-19.png">
+          <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
+        </None>
+    </ItemGroup>
+
+</Project>

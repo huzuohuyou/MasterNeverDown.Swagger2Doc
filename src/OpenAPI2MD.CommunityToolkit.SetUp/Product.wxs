@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+	<Product Id="*" Name="Swagger2Doc" Language="1033" Version="7.6.7" Manufacturer="wuhailong" UpgradeCode="294bb15f-1eec-4879-af17-6edf8a1b85c3">
+		<Package InstallerVersion="200" Compressed="yes" InstallScope="perMachine" />
+
+		<MajorUpgrade DowngradeErrorMessage="A newer version of [ProductName] is already installed." />
+		<MediaTemplate EmbedCab="yes" />
+		<Feature Id="ProductFeature" Title="ChangeLog.CommunityToolkitSetup" Level="1">
+			<ComponentRef Id="cmpA7918991BF6A797AC1AC8E244B90EF6B" />
+			<ComponentRef Id="cmp5E2F500CE4D980711BC80539A8005361" />
+			<ComponentRef Id="cmpA5DB0D8D0BA44EB9A59F99DBA123F0F7" />
+			<ComponentRef Id="cmp48708862DE6E456AA582CC86EE7E243C" />
+			<ComponentRef Id="cmp90CAF8F8DB86C449775E400D409E45B7" />
+			<ComponentRef Id="cmpC7CA17EEED32BAB3E6E6730040F28F9C" />
+			<ComponentRef Id="cmpC7CA17EEED32BAB3E6E6730040F28F9D" />
+		</Feature>
+		
+
+	</Product>
+
+	<Fragment>
+		<Directory Id="TARGETDIR" Name="SourceDir">
+			<Directory Id="ProgramFilesFolder">
+				<Directory Id="INSTALLFOLDER" Name="Swagger2Doc" >
+					<Component Id="cmpC7CA17EEED32BAB3E6E6730040F28F9D"
+					           Guid="{1781A625-8ACB-45E7-A8BA-219D81760B2E}">
+						<CreateFolder />
+						<Environment Id="TestMinVar"
+						             Action="set"
+						             Part="last"
+						             Name="Path"
+						             Permanent="no"
+						             System="yes"
+						             Value="[INSTALLFOLDER]" />
+					</Component>
+				</Directory>
+			</Directory>
+		</Directory>
+	</Fragment>
+
+	<Fragment>
+		<ComponentGroup Id="ProductComponents" Directory="INSTALLFOLDER">
+			<Component Id="cmpA7918991BF6A797AC1AC8E244B90EF6B" Guid="{0F0A2FA6-BE76-4F81-9B0E-517A143FF2E4}">
+				<File Id="filB04CEAAEC4818948A7EEC9C226427F54" KeyPath="yes" Source="$(var.BasePath)\NOTICE.TXT" />
+			</Component>
+			<Component Id="cmp5E2F500CE4D980711BC80539A8005361" Guid="{BEC8E7FE-8D47-403A-9557-ECF1CCA2F746}">
+				<File Id="fil7C8CFBB633046AD495BF0C15656BD21E" KeyPath="yes" Source="$(var.BasePath)\openapi.yaml" />
+			</Component>
+			<Component Id="cmpA5DB0D8D0BA44EB9A59F99DBA123F0F7" Guid="{FB0C3A58-6503-4E27-9913-FEE639E989AA}">
+				<File Id="fil9EB972BD5379D2F368E298EFD27D44F9" KeyPath="yes" Source="$(var.BasePath)\OpenAPI2MD.CommunityToolkit.pdb" />
+			</Component>
+			<Component Id="cmp48708862DE6E456AA582CC86EE7E243C" Guid="{0EEFE926-A03D-421A-935F-8BE9BE7157A5}">
+				<File Id="filD8DF58010A7EB68DE090A61785DE0CDF" KeyPath="yes" Source="$(var.BasePath)\OpenApi2Word.CommunityToolkit.pdb" />
+			</Component>
+			<Component Id="cmp90CAF8F8DB86C449775E400D409E45B7" Guid="{FFADE4BA-B5BB-4578-9C12-59F2BD7D6082}">
+				<File Id="filE217E3D2661BD59EDC56EF4E9C13EB8E" KeyPath="yes" Source="$(var.BasePath)\Swagger2Doc.exe" />
+			</Component>
+			<Component Id="cmpC7CA17EEED32BAB3E6E6730040F28F9C" Guid="{B1018B10-6896-48EF-90B7-8B4D0701A22E}">
+				<File Id="fil83CFAB5714B84CE9EBE16313EB494C16" KeyPath="yes" Source="$(var.BasePath)\Swagger2Doc.pdb" />
+			</Component>
+			
+		</ComponentGroup>
+	</Fragment>
+</Wix>

@@ -1,0 +1,1989 @@
+﻿---
+openapi: 3.1.1
+info:
+  title: 北向接口说明文档
+  contact:
+    name: Hailong Wu
+    email: sesa669011@se.com
+  version: 2.1.4
+paths:
+  "/alarms/{id}/actived":
+    get:
+      tags:
+      - Alarm
+      summary: 获取告警点位的告警活动状态
+      description: 传入告警点位id,返回点位.On属性值
+      operationId: GetAlarmActiveState
+      parameters:
+      - name: access_token
+        in: header
+        description: 令牌
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: 告警点位
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+  "/alarms/actived":
+    get:
+      tags:
+      - Alarm
+      summary: 获取告警点位的告警活动状态
+      description: 传入告警点位id,返回点位.On属性值
+      operationId: GetAllAlarmActiveState
+      parameters:
+      - name: access_token
+        in: header
+        description: 令牌
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+  "/equipments/{id}/alarms/actived":
+    get:
+      tags:
+      - Alarm
+      summary: 获取指定设备告警点位的活动状态
+      description: 传入设备id,返回设备告警点位.On属性值
+      operationId: GetEquipmentActiveAlarms
+      parameters:
+      - name: access_token
+        in: header
+        description: 令牌
+        required: true
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: 设备id
+        required: true
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+  "/alarms/actived/search":
+    get:
+      tags:
+      - Alarm
+      summary: 获取指定设备，点位的活动告警
+      description: 过滤指定设备，告警点位的或启动告警
+      operationId: GetAlarmsByFilter
+      parameters:
+      - name: access_token
+        in: header
+        description: 令牌
+        schema:
+          type: string
+      - name: Tags
+        in: query
+        description: 点位集合
+        schema:
+          type: array
+          items:
+            type: string
+      - name: Equips
+        in: query
+        description: 设备集合
+        schema:
+          type: array
+          items:
+            type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+  "/cache/info":
+    get:
+      tags:
+      - Cache
+      summary: 获取缓存信息
+      description: "获取北向接口缓存状态\r\n是否开启设备树缓存及各个点位缓存数量\r\n是否开启实时缓存及实时缓存数量"
+      operationId: Info
+      parameters:
+      - name: access_token
+        in: header
+        description: token令牌
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/CacheInfoResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/CacheInfoResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/CacheInfoResponse"
+  "/cicode/execute":
+    post:
+      tags:
+      - CiCode
+      summary: 执行传入的CiCode代码方法名、参数组成的字符串，返回CiCode方法执行结果
+      description: "可根据开发需求动态传入需要执行的CiCode代码并返回结果。\r\n传入空代码会报异常，传入错误代码会返回空"
+      operationId: Excute
+      parameters:
+      - name: access_token
+        in: header
+        description: ''
+        schema:
+          type: string
+      requestBody:
+        description: ''
+        content:
+          application/json-patch+json:
+            schema:
+              type: string
+          application/json:
+            schema:
+              type: string
+          text/json:
+            schema:
+              type: string
+          application/*+json:
+            schema:
+              type: string
+      responses:
+        '200':
+          description: Success
+  "/alarms/actions/get-history":
+    post:
+      tags:
+      - Event
+      summary: 获取报警/事件历史数据
+      description: "通过历史报警/事件查询接口可获得PO系统中已经发生的，而且以指定的点位/层级节点为来源的报警/事件数据信息。\r\n注意：\r\n1、\t如果未在PO系统中定义的报警/事件，则无法获得报警/事件的历史。\r\n2、\t如果指定的点位/层级节点过多，或查询的时间段过长，为了避免长时间占用过多系统资源以及响应超时的情况，该接口会截取一部分记录进行返回并标注结果不完整（complete=false）。这并非是最佳设计，而是在功能、资源占用和复杂度之间的一种权衡。这种情况下，上位应用应该减少查询的点位/层级节点数量或缩小查询时间段已获得完整的历史报警/事件信息记录"
+      operationId: GetAlarmHistoryData
+      parameters:
+      - name: access_token
+        in: header
+        description: token
+        schema:
+          type: string
+      requestBody:
+        description: 请求Tags或Equipments
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/EventHistoryResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/EventHistoryResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/EventHistoryResponse"
+  "/events/actions/get-history":
+    post:
+      tags:
+      - Event
+      summary: 获取报警/事件历史数据
+      description: "通过历史报警/事件查询接口可获得PO系统中已经发生的，而且以指定的点位/层级节点为来源的报警/事件数据信息。\r\n注意：\r\n1、\t如果未在PO系统中定义的报警/事件，则无法获得报警/事件的历史。\r\n2、\t如果指定的点位/层级节点过多，或查询的时间段过长，为了避免长时间占用过多系统资源以及响应超时的情况，该接口会截取一部分记录进行返回并标注结果不完整（complete=false）。这并非是最佳设计，而是在功能、资源占用和复杂度之间的一种权衡。这种情况下，上位应用应该减少查询的点位/层级节点数量或缩小查询时间段已获得完整的历史报警/事件信息记录"
+      operationId: GetEventHistoryData
+      parameters:
+      - name: access_token
+        in: header
+        description: token
+        schema:
+          type: string
+      requestBody:
+        description: 请求Tags或Equipments
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/EventHistoryRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/EventHistoryResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/EventHistoryResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/EventHistoryResponse"
+  "/hierarchy":
+    get:
+      tags:
+      - Hierarchy
+      summary: 系统层级查询接口
+      description: "通过调用系统层级查询接口接口可获得PO系统中已经配置的逻辑层级节点（Equipment）结构树及层级节点中可能包含的点位列表信息。\r\n注意：每次调用该功能接口都需要完整遍历PO内部的层级、点位等信息，查询开销较大，上位应用应当在有绝对必要时调用该接口（例如上位应用启动时，或通过人工确认确知PO系统内部层级点表已发生变化后）"
+      operationId: GetHierarchy
+      parameters:
+      - name: Name
+        in: query
+        description: Hierarchy节点名称
+        schema:
+          type: string
+      - name: ShowTags
+        in: query
+        description: 是否显示Tag
+        schema:
+          type: boolean
+      - name: access_token
+        in: header
+        description: token
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/HierarchyTree"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/HierarchyTree"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/HierarchyTree"
+  "/hierarchy-table":
+    get:
+      tags:
+      - Hierarchy
+      summary: 系统层级查询table接口 .
+      operationId: GetHierarchyTable
+      parameters:
+      - name: access_token
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/HierarchyTable"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/HierarchyTable"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/HierarchyTable"
+  "/oauth/token":
+    post:
+      tags:
+      - Login
+      summary: 验证用户并授权获取Token
+      description: "上位应用在调用北向接口以获取数据之前，应当先完成应用的身份认证（Authentication）并获得相应的数据访问授权（Authorization）。\r\n北向接口认证和授权上位应用的机制符合OAuth
+        2.0标准框架规范 （RFC6749）定义中客户端凭证模式（Client Credentials Grant）完成身份确认并获得访问令牌（Access
+        Token）。\r\n上位应用应当在发起后续数据查询/订阅请求的时候附带上访问令牌，并在访问令牌过期后的后续请求之前完成重新认证授权的操作"
+      operationId: Authentication
+      parameters:
+      - name: grant_type
+        in: header
+        description: 客户端凭证模式必须为client_credentials
+        schema:
+          type: string
+      - name: client_id
+        in: header
+        description: 客户端Id字符串
+        schema:
+          type: string
+      - name: client_secret
+        in: header
+        description: 客户端密码字符串
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/TokenResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TokenResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/TokenResponse"
+  "/rolePrivileges/Check":
+    get:
+      tags:
+      - RolePrivilege
+      summary: 检查用户的权限组
+      description: "检查当前用户的权限组，假如传入权限组为空抛出异常，\r\n假如不包含权限返回false\r\n假如包含权限返回true"
+      operationId: HasAnyPrivilege
+      parameters:
+      - name: privileges
+        in: query
+        description: privilege group
+        schema:
+          type: string
+      - name: access_token
+        in: header
+        description: ''
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+  "/subscriptions/tags/values/latest-by-cov":
+    post:
+      tags:
+      - Subscription
+      summary: 请求一次数据变化时返回的订阅ID
+      description: "通过实时数据订阅接口可从PO系统中根据订阅点位和订阅策略组成的订阅条件获得实时点位数据。订阅策略分为点位值变化触发和定时触发两种。其中点位值变化触发策略允许通过变化阈值的类型和数值实现对死区的模拟；定时触发订阅则忽略点位值的变化与否，仅通过预定义的时间间隔推送最新的点位值。\r\n对于点位值变化触发策略来说，只要点位值的质量（Good/Bad）发生变化，则必然会推送该点位的最新值与质量，无论该点位值是否超过了订阅中对该点位的死区定义。\r\n注意：由于点位值的更新本质上是基于轮询机制而存在客观存在的系统采样周期，如果真实世界中的物理值的变化频率高于系统既有的采样频率的两倍，则可能导致点位值变化订阅推送未能反映应有的点位变化信息而丢失关键数据（详情可查阅奈奎斯特-香农采样定律）。例如：PO与下位系统之间通过Modbus协议进行通讯，虽然轮询周期为50毫秒（忽略模数转换的时间与发起策略），但由于通过一个北向接口实例订阅的点位数量为50万点，该北向接口完成一次50万点轮询的时间为60秒，在此种采样周期下（50毫秒被60秒吸收为60秒），一个以60秒为周期的正弦信号由于欠采样，会被误读为恒定值而丧失关键信息。因此对于快变量的采样，需要单独安排独立的PO客户端-北向接口组合以保证其采样频率处于可接受的范围内。"
+      operationId: RequestTagSubscriptionByCov
+      parameters:
+      - name: access_token
+        in: header
+        description: header中access_token
+        schema:
+          type: string
+      requestBody:
+        description: The list of tag subscription request.
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+          application/json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+          text/json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+          application/*+json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+  "/subscriptions/tags/values/latest-by-interval":
+    post:
+      tags:
+      - Subscription
+      summary: 请求一次按时间间隔返回的订阅ID
+      description: "通过实时数据订阅接口可从PO系统中根据订阅点位和订阅策略组成的订阅条件获得实时点位数据。订阅策略分为点位值变化触发和定时触发两种。其中点位值变化触发策略允许通过变化阈值的类型和数值实现对死区的模拟；定时触发订阅则忽略点位值的变化与否，仅通过预定义的时间间隔推送最新的点位值。\r\n对于点位值变化触发策略来说，只要点位值的质量（Good/Bad）发生变化，则必然会推送该点位的最新值与质量，无论该点位值是否超过了订阅中对该点位的死区定义。\r\n注意：由于点位值的更新本质上是基于轮询机制而存在客观存在的系统采样周期，如果真实世界中的物理值的变化频率高于系统既有的采样频率的两倍，则可能导致点位值变化订阅推送未能反映应有的点位变化信息而丢失关键数据（详情可查阅奈奎斯特-香农采样定律）。例如：PO与下位系统之间通过Modbus协议进行通讯，虽然轮询周期为50毫秒（忽略模数转换的时间与发起策略），但由于通过一个北向接口实例订阅的点位数量为50万点，该北向接口完成一次50万点轮询的时间为60秒，在此种采样周期下（50毫秒被60秒吸收为60秒），一个以60秒为周期的正弦信号由于欠采样，会被误读为恒定值而丧失关键信息。因此对于快变量的采样，需要单独安排独立的PO客户端-北向接口组合以保证其采样频率处于可接受的范围内。"
+      operationId: RequestTagSubscriptionByInterval
+      parameters:
+      - name: access_token
+        in: header
+        description: header中access_token
+        schema:
+          type: string
+      requestBody:
+        description: The list of tag subscription request.
+        content:
+          application/json-patch+json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+          application/json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+          text/json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+          application/*+json:
+            schema:
+              type: array
+              items:
+                "$ref": "#/components/schemas/TagSubscriptionRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+  "/subscriptions/tags/values/latest-by-cov/{id}":
+    get:
+      tags:
+      - Subscription
+      summary: 实时变化数据订阅连接
+      description: "请求示例：\r\nws://pso-api-server.com/subscriptions/tags/values/latest-by-cov/1e455915-e4fc-419a-8cd8-2cbf6c06b0d9\r\n当WebSocket连接建立后，北向接口将会推送订阅中的所有点位的最新已知数据。\r\n当既定订阅策略中的条件被满足时，北向接口将会通过已经建立好的WebSocket连接推送点位数据。"
+      operationId: ConnectCovTagSubscriptionAsync
+      parameters:
+      - name: id
+        in: path
+        description: 订阅id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+  "/subscriptions/tags/values/latest-by-interval/{id}":
+    get:
+      tags:
+      - Subscription
+      summary: 定时推送数据WebSocket连接
+      description: "请求示例：\r\nws://pso-api-server.com/subscriptions/tags/values/latest-by-interval/1e455915-e4fc-419a-8cd8-2cbf6c06b0d9\r\n当WebSocket连接建立后，北向接口将会推送订阅中的所有点位的最新已知数据。\r\n当既定订阅策略中的条件被满足时，北向接口将会通过已经建立好的WebSocket连接推送点位数据。"
+      operationId: ConnectIntervalTagSubscriptionAsync
+      parameters:
+      - name: id
+        in: path
+        description: 订阅id
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+  "/subscriptions/events":
+    post:
+      tags:
+      - Subscription
+      summary: 请求一次新的事件订阅
+      description: 通过实时数据订阅接口可从PO系统中根据订阅由指定点位/层级节点触发的报警/事件。
+      operationId: RequestEventSubscription
+      parameters:
+      - name: access_token
+        in: header
+        description: header中access_token
+        schema:
+          type: string
+      requestBody:
+        description: The NBApi.Model.NbApiVO.Request.EventSubscriptionRequest.
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/EventSubscriptionRequest"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/EventSubscriptionRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/EventSubscriptionRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/EventSubscriptionRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/SubscriptionIdResponse"
+  "/subscriptions/events/{id}":
+    get:
+      tags:
+      - Subscription
+      summary: 根据事件ID建立时间订阅
+      description: "请求示例：\r\nws://pso-api-server.com/subscriptions/events/1e455915-e4fc-419a-8cd8-2cbf6c06b0d9\r\n通过实时数据订阅接口可从PO系统中根据订阅由指定点位/层级节点触发的报警/事件。"
+      operationId: EstablishConnectionForEventSubscriptionAsync
+      parameters:
+      - name: id
+        in: path
+        description: The subscription id.
+        required: true
+        schema:
+          type: string
+          format: uuid
+      responses:
+        '200':
+          description: Success
+  "/tag/variable-name/{count}":
+    get:
+      tags:
+      - Tag
+      summary: 获取指定数量variable tag信息
+      operationId: VariableTagName
+      parameters:
+      - name: count
+        in: path
+        required: true
+        schema:
+          type: integer
+          format: int32
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  type: string
+            application/json:
+              schema:
+                type: array
+                items:
+                  type: string
+            text/json:
+              schema:
+                type: array
+                items:
+                  type: string
+  "/tag/variable":
+    get:
+      tags:
+      - Tag
+      summary: 获取variable tag信息
+      operationId: VariableTag
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/VariableTagDto"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/VariableTagDto"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/VariableTagDto"
+  "/tag/alarm":
+    get:
+      tags:
+      - Tag
+      summary: alarm tag信息
+      operationId: AlarmTag
+      parameters:
+      - name: access_token
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AlarmTagDto"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AlarmTagDto"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AlarmTagDto"
+  "/tag/trend":
+    get:
+      tags:
+      - Tag
+      summary: 获取trend tag信息
+      operationId: TrendTag
+      parameters:
+      - name: access_token
+        in: header
+        schema:
+          type: string
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TrendTagDto"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TrendTagDto"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TrendTagDto"
+  "/tags/values/actions/get-latest":
+    post:
+      tags:
+      - TagData
+      summary: 获取实时数据
+      description: "通过实时数据查询接口可获得PO系统中各点位的最后更新数值。此接口可以接受按层级节点或按点位查询。如果是按照包含通配符的层级节点查询，此接口会返回此层级节点所包含的所有点位值，并递归查询其所有子层级节点所包含的所有点位值，但是不同的层级节点的点位值会平铺在返回的数组中，并不会保留原有的层级结构。\r\n注意：由于点位值的更新本质上是基于轮询机制的，从真实世界物理值发生变化到更新至其数字孪生副本之间存在时间差，因此无论是否禁用缓存机制与否，都无法消除由于上述时间差导致的真实值与通过该接口获得的测量值之间的差异。"
+      operationId: GetRealTimeTagDataAsync
+      parameters:
+      - name: access_token
+        in: header
+        description: token
+        schema:
+          type: string
+      requestBody:
+        description: 查询点位
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/RealTimeTagDataRequest"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/RealTimeTagDataRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/RealTimeTagDataRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/RealTimeTagDataRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagValue"
+        '404':
+          description: Not Found
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/ProblemDetails"
+  "/tags/values/actions/get-history":
+    post:
+      tags:
+      - TagData
+      summary: 历史数据查询
+      description: "通过历史数据查询接口可获得PO系统中已经定义的趋势（Trend）数据。\r\n注意：\r\n1、    如果相关点位未在PO系统中定义趋势，则无法获得点位的历史。\r\n2、
+        \   历史数据的采样周期由PO中的定义的趋势所确定。\r\n3、    如果指定的点位过多或查询的时间段过长，为了避免长时间占用过多系统资源以及响应超时的情况，该接口会截取一部分记录进行返回并标注结果不完整（complete=false）。这并非是最佳设计，而是在功能、资源占用和复杂度之间的一种权衡。这种情况下，上位应用应该减少查询的点位数量或缩小查询时间段已获得完整的历史数据记录。"
+      operationId: GetTagHistoryData
+      parameters:
+      - name: access_token
+        in: header
+        description: token
+        schema:
+          type: string
+      requestBody:
+        description: 查询条件
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/TagHistoryRequest"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TagHistoryRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/TagHistoryRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/TagHistoryRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                "$ref": "#/components/schemas/TagHistoryResponse"
+            application/json:
+              schema:
+                "$ref": "#/components/schemas/TagHistoryResponse"
+            text/json:
+              schema:
+                "$ref": "#/components/schemas/TagHistoryResponse"
+  "/tags/values/actions/get-indicator":
+    post:
+      tags:
+      - TagData
+      summary: "历史数据指标结果查询\r\n查询最大值最小值及其发生时间"
+      operationId: GetTagIndicatorData
+      parameters:
+      - name: access_token
+        in: header
+        description: token
+        schema:
+          type: string
+      requestBody:
+        description: 点位指标查询请求参数
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/TagIndicatorRequest"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TagIndicatorRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/TagIndicatorRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/TagIndicatorRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagIndicators"
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagIndicators"
+            text/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/TagIndicators"
+  "/tags/{tag}/values/set-point":
+    post:
+      tags:
+      - TagData
+      summary: 点位控制
+      description: "通过点值写入接口，可对PO系统中的控制点位的值进行控制写入。用于控制的点位必须是可控制点（遥调、遥控）。控制点值写入接口请求路径为：
+        \ /tags/{tag }/values/set-point\r\n请注意其中的点位名称必须进行必要的URL编码以免因为点位名称中所含有的特殊字符导致URL歧义而无法被北向接口所识别。"
+      operationId: TagControlAction
+      parameters:
+      - name: tag
+        in: path
+        description: Tag
+        required: true
+        schema:
+          type: string
+      - name: access_token
+        in: header
+        description: token
+        schema:
+          type: string
+      requestBody:
+        description: 点位信息
+        content:
+          application/json-patch+json:
+            schema:
+              "$ref": "#/components/schemas/TagWriteRequest"
+          application/json:
+            schema:
+              "$ref": "#/components/schemas/TagWriteRequest"
+          text/json:
+            schema:
+              "$ref": "#/components/schemas/TagWriteRequest"
+          application/*+json:
+            schema:
+              "$ref": "#/components/schemas/TagWriteRequest"
+      responses:
+        '200':
+          description: Success
+          content:
+            text/plain:
+              schema:
+                type: boolean
+            application/json:
+              schema:
+                type: boolean
+            text/json:
+              schema:
+                type: boolean
+  "/devices/{id}/alarms":
+    get:
+      tags:
+      - WaveForm
+      summary: 根据传入指定设备id获取指定时间段内的告警
+      description: 根据传入指定设备id获取指定时间段内的告警
+      operationId: GetDeviceAlarmsByTimeRange
+      parameters:
+      - name: access_token
+        in: header
+        description: 令牌
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: 设备id 集群.设备名称
+        required: true
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        description: 开始时间
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: 截至时间
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AlarmDataResponse"
+  "/devices/alarms":
+    get:
+      tags:
+      - WaveForm
+      summary: 获取系统内全部设备指定时间段告警信息
+      description: 获取系统内全部设备指定时间段告警信息
+      operationId: GetDevicesAlarmsByTimeRange
+      parameters:
+      - name: access_token
+        in: header
+        description: ''
+        schema:
+          type: string
+      - name: startDate
+        in: query
+        description: 开始时间
+        schema:
+          type: string
+          format: date-time
+      - name: endDate
+        in: query
+        description: 截至时间
+        schema:
+          type: string
+          format: date-time
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/AlarmDataResponse"
+  "/alarms/{id}/waveforms":
+    get:
+      tags:
+      - WaveForm
+      summary: 通过告警id获取关联故障录波信息
+      description: 根据传递的报警id查询关联故障录波id列表，并根据分页规则进行数据分批查询，当pageSize和pageNumber为0则返回全部数据
+      operationId: GetWaveformIdByAlarmId
+      parameters:
+      - name: access_token
+        in: header
+        description: 令牌
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: 告警id
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: 分页大小
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: pageNumber
+        in: query
+        description: 页码
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/WaveformDataBundleResponse"
+  "/waveforms/{id}/series":
+    get:
+      tags:
+      - WaveForm
+      summary: 通过故障录波id获取关联故障录波详情
+      description: 根据传递的障录波id查询关联故障录波详情，并根据分页规则进行数据分批查询，当pageSize和pageNumber为0则返回全部数据
+      operationId: GetSeriesByWaveformId
+      parameters:
+      - name: access_token
+        in: header
+        description: 令牌
+        schema:
+          type: string
+      - name: id
+        in: path
+        description: ''
+        required: true
+        schema:
+          type: string
+      - name: pageSize
+        in: query
+        description: 分页大小
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      - name: pageNumber
+        in: query
+        description: 页码
+        schema:
+          type: integer
+          format: int32
+          default: 0
+      responses:
+        '200':
+          description: Success
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  "$ref": "#/components/schemas/WaveformDataBundleResponse"
+components:
+  schemas:
+    AlarmDataResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: 告警id
+          nullable: true
+        alarmDefinitionId:
+          type: string
+          description: 告警定义
+          nullable: true
+        incidentId:
+          type: string
+          description: 事故id
+          nullable: true
+        type:
+          type: string
+          description: 告警type
+          nullable: true
+        source:
+          "$ref": "#/components/schemas/AlarmDataSource"
+        whatSummaryText:
+          type: string
+          description: 总结
+          nullable: true
+        whatDetailText:
+          type: string
+          description: 详情
+          nullable: true
+        startTimeUtc:
+          type: string
+          description: 开始utc时间
+          format: date-time
+        endTimeUtc:
+          type: string
+          description: 截至utc时间
+          format: date-time
+        durationMs:
+          type: number
+          description: 持续毫秒
+          format: double
+        priority:
+          type: number
+          description: 优先级
+          format: double
+        rawEvents:
+          type: array
+          items: {}
+          description: ''
+          nullable: true
+        pqEventId:
+          type: string
+          description: ''
+          nullable: true
+        dddDirection:
+          type: number
+          description: ''
+          format: double
+        dddConfidence:
+          type: number
+          description: ''
+          format: double
+        isActive:
+          type: boolean
+          description: ''
+        isUnacknowledged:
+          type: boolean
+          description: 是否应答
+        loadChangePercent:
+          type: number
+          description: ''
+          format: double
+        timeQuality:
+          type: number
+          description: 时序是质量
+          format: double
+        timeQualityMicroseconds:
+          type: number
+          description: ''
+          format: double
+        waveformCharacteristics:
+          type: array
+          items: {}
+          description: ''
+          nullable: true
+        lastModifiedUtc:
+          type: string
+          description: 最后修改utc时间
+          format: date-time
+      additionalProperties: false
+      description: 告警响应数据
+    AlarmDataSource:
+      type: object
+      properties:
+        sourceId:
+          type: string
+          description: 告警id
+          nullable: true
+        displayName:
+          type: string
+          description: 显示名
+          nullable: true
+        systemName:
+          type: string
+          description: 系统名
+          nullable: true
+        ianaTimeZoneName:
+          type: string
+          description: 时区
+          nullable: true
+      additionalProperties: false
+      description: 告警设备
+    AlarmEvent:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: 报警点位
+          nullable: true
+        category:
+          type: string
+          description: 类别
+          nullable: true
+        equip:
+          type: string
+          description: 设备
+          nullable: true
+        msg:
+          type: string
+          description: 消息
+          nullable: true
+        desc:
+          type: string
+          description: 报警点位描述
+          nullable: true
+        state:
+          type: string
+          description: 状态
+          nullable: true
+        ts:
+          type: integer
+          description: 报警发生事件
+          format: int64
+        comment:
+          type: string
+          description: 备注
+          nullable: true
+        type:
+          type: string
+          description: 报警类型
+          nullable: true
+        alarmState:
+          type: string
+          description: 报警状态
+          nullable: true
+      additionalProperties: false
+      description: 报警事件业务数据
+    AlarmTagDto:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          description: "点位是否有效\r\n点位对应的VariableTag名称是否满足点位规则，既有Device信息又有指标信息\r\n通过截取点位全称实现"
+        cluster:
+          type: string
+          description: 集群
+          nullable: true
+        equipmentName:
+          type: string
+          description: 设备名称
+          nullable: true
+        equipmentFullName:
+          type: string
+          description: 设备全称(带集群名称)
+          nullable: true
+          readOnly: true
+        tagName:
+          type: string
+          description: "点位名称\r\nTrendTag的点位名称读取的表属性是TAG/NAME\r\nAlarmTag的点位名称读取的表属性是NAME"
+          nullable: true
+        tagFullName:
+          type: string
+          description: 点位全称(带集群名称)
+          nullable: true
+          readOnly: true
+        deviceName:
+          type: string
+          description: "设备名称\r\n设置Equipment:=Cluster+Equipment\r\n未设置Equipment:=DeviceSignature"
+          nullable: true
+          readOnly: true
+        comment:
+          type: string
+          description: 备注
+          nullable: true
+        name:
+          type: string
+          description: 报警点位名称
+          nullable: true
+        category:
+          type: string
+          description: 分类
+          nullable: true
+        alarmType:
+          type: string
+          description: 报警类型
+          nullable: true
+        priority:
+          type: string
+          description: 优先级
+          nullable: true
+      additionalProperties: false
+      description: 报警点位
+    CacheInfoResponse:
+      type: object
+      properties:
+        cacheSwitchHierarchy:
+          type: boolean
+          description: 设备树缓存开启标志
+        hierarchyTreeCount:
+          type: integer
+          description: 设备树数量
+          format: int32
+        hierarchyTableCount:
+          type: integer
+          description: 设备树表数量
+          format: int32
+        equipmentCount:
+          type: integer
+          description: 设备数量
+          format: int32
+        variableTagCount:
+          type: integer
+          description: 点位数量
+          format: int32
+        alarmTagCount:
+          type: integer
+          description: 告警点位数量
+          format: int32
+        trendTagCount:
+          type: integer
+          description: 趋势点数量
+          format: int32
+        cacheSwitchRealTime:
+          type: boolean
+          description: 实时缓存开关开启标志
+        variableTagDataCount:
+          type: integer
+          description: 实时点位缓存数量
+          format: int32
+        cacheSwitchRealTimeAlarm:
+          type: boolean
+          description: 实时告警缓存开关开启标志
+        realTimeAlarmCount:
+          type: integer
+          description: 实时告警点位缓存数量
+          format: int32
+      additionalProperties: false
+      description: 缓存信息实体
+    EventHistoryRequest:
+      required:
+      - from
+      - to
+      type: object
+      properties:
+        from:
+          type: integer
+          description: 开始时间戳不能为空 毫秒值
+          format: int64
+        to:
+          type: integer
+          description: 截至时间戳不能为空 毫秒值
+          format: int64
+        tags:
+          type: array
+          items:
+            type: string
+          description: "需要查询的点位名称数组\r\ntags与equips不能同时为空"
+          nullable: true
+        equips:
+          type: array
+          items:
+            type: string
+          description: "需要查询的层级节点名称数组，支持通配符。例如：folder.*\r\ntags与equips不能同时为空"
+          nullable: true
+      additionalProperties: false
+      description: 报警历史数据请求信息
+    EventHistoryResponse:
+      type: object
+      properties:
+        complete:
+          type: boolean
+          description: 表明返回的数据是否完整（完整的含义为：不存在报警/事件过多的情况）
+        events:
+          type: array
+          items:
+            "$ref": "#/components/schemas/AlarmEvent"
+          description: 报警/事件信息对象列表
+          nullable: true
+      additionalProperties: false
+      description: 报警历史数据响应信息
+    EventSubscriptionRequest:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+          description: 点位集合
+          nullable: true
+        equips:
+          type: array
+          items:
+            type: string
+          description: 设备集合
+          nullable: true
+      additionalProperties: false
+      description: 报警/事件订阅发起请求
+    HierarchyTable:
+      type: object
+      properties:
+        id:
+          type: integer
+          description: 设备Id
+          format: int32
+        parentId:
+          type: integer
+          description: 设备父Id
+          format: int32
+        treeId:
+          type: string
+          description: 树构建设备Id
+          nullable: true
+        treeParentId:
+          type: string
+          description: 树构建设备父Id
+          nullable: true
+        deep:
+          type: integer
+          description: 层级深度
+          format: int32
+        name:
+          type: string
+          description: 设备名称
+          nullable: true
+        comment:
+          type: string
+          description: 设备名称
+          nullable: true
+        tagPrefix:
+          type: string
+          description: 点位前缀
+          nullable: true
+      additionalProperties: false
+      description: 设备表格
+    HierarchyTagNode:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 点位名称
+          nullable: true
+        itemName:
+          type: string
+          description: 点位项名称，往往用于表达该点位的物理含义
+          nullable: true
+        extensions:
+          type: string
+          description: "点位类型：\r\nALM：表明该点位有与之关联的报警\r\nTRN：表明该点位有与之关联的历史趋势"
+          nullable: true
+        unit:
+          type: string
+          description: 工程单位
+          nullable: true
+        description:
+          type: string
+          description: 点位说明
+          nullable: true
+      additionalProperties: false
+      description: 点位对象
+    HierarchyTree:
+      type: object
+      properties:
+        name:
+          type: string
+          description: 设备名称
+          nullable: true
+        subordinates:
+          type: array
+          items:
+            "$ref": "#/components/schemas/HierarchyTree"
+          description: 该层级节点下的直接子层级节点列表
+          nullable: true
+        tags:
+          type: array
+          items:
+            "$ref": "#/components/schemas/HierarchyTagNode"
+          description: 该层级节点下的直接点位列表
+          nullable: true
+      additionalProperties: false
+      description: 设备树
+    ProblemDetails:
+      type: object
+      properties:
+        type:
+          type: string
+          nullable: true
+        title:
+          type: string
+          nullable: true
+        status:
+          type: integer
+          format: int32
+          nullable: true
+        detail:
+          type: string
+          nullable: true
+        instance:
+          type: string
+          nullable: true
+      additionalProperties: {}
+    RealTimeTagDataRequest:
+      type: object
+      properties:
+        tags:
+          type: array
+          items:
+            type: string
+          description: 点位集合
+          nullable: true
+        equips:
+          type: array
+          items:
+            type: string
+          description: 设备集合
+          nullable: true
+      additionalProperties: false
+      description: 实时数据订阅请求
+    ReSample:
+      type: object
+      properties:
+        period:
+          "$ref": "#/components/schemas/ReSamplePeriod"
+        condense_method:
+          type: string
+          description: 数据压缩方法
+          nullable: true
+        stretch_method:
+          type: string
+          description: 数据填充方法
+          nullable: true
+      additionalProperties: false
+      description: 重采样指令
+    ReSamplePeriod:
+      type: object
+      properties:
+        months:
+          type: integer
+          description: 重采样周期月数
+          format: int32
+        days:
+          type: integer
+          description: 重采样周期天数
+          format: int32
+        hours:
+          type: integer
+          description: 重采样周期小时数
+          format: int32
+        minutes:
+          type: integer
+          description: 重采样周期分钟数
+          format: int32
+        seconds:
+          type: integer
+          description: 重采样周期秒数
+          format: int32
+      additionalProperties: false
+      description: 重采样周期
+    SubscriptionIdResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          description: The Subscription Id
+          format: uuid
+      additionalProperties: false
+      description: The Subscription Id Response
+    TagHistoryRequest:
+      type: object
+      properties:
+        from:
+          type: integer
+          description: 起始时间
+          format: int64
+        to:
+          type: integer
+          description: 截止时间
+          format: int64
+        tags:
+          type: array
+          items:
+            type: string
+          description: 需要查询的点位名称数组
+          nullable: true
+        resample:
+          "$ref": "#/components/schemas/ReSample"
+      additionalProperties: false
+      description: 历史点位数据查询请求信息
+    TagHistoryResponse:
+      type: object
+      properties:
+        complete:
+          type: boolean
+          description: 表明返回的数据是否完整（完整的含义为：不存在数据点过多或查询时间段过长的情况）
+        tags:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TagRecords"
+          description: 点位历史数据对象列表
+          nullable: true
+      additionalProperties: false
+      description: 历史数据接口响应报文
+    TagIndicatorRequest:
+      type: object
+      properties:
+        from:
+          type: integer
+          description: 起始时间
+          format: int64
+        to:
+          type: integer
+          description: 截止时间
+          format: int64
+        tags:
+          type: array
+          items:
+            type: string
+          description: 需要查询的点位名称数组
+          nullable: true
+        types:
+          type: array
+          items:
+            type: string
+          description: "查询指标类型\r\nMIN,MAX"
+          nullable: true
+      additionalProperties: false
+      description: 点位指标请求信息
+    TagIndicators:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: 点位名称
+          nullable: true
+        indicators:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TagIndicatorValue"
+          description: 点位结果集
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+      description: 点位指标集合
+    TagIndicatorValue:
+      type: object
+      properties:
+        val:
+          type: number
+          description: 点位最后更新数值
+          format: double
+          nullable: true
+        ts:
+          type: integer
+          description: 点位最后更新时间
+          format: int64
+          nullable: true
+        type:
+          type: string
+          description: 点位指标类型
+          nullable: true
+      additionalProperties: false
+      description: 点位指标
+    TagRecords:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: 点位名称
+          nullable: true
+        equipComment:
+          type: string
+          description: 设备名称
+          nullable: true
+        records:
+          type: array
+          items:
+            "$ref": "#/components/schemas/TrendTagValue"
+          description: 点位结果集
+          nullable: true
+          readOnly: true
+      additionalProperties: false
+      description: 趋势点位记录
+    TagSubscriptionRequest:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: 需要订阅的点位名称
+          nullable: true
+        type:
+          type: string
+          description: "点位值变化阈值类型：\r\nABS：变化绝对值\r\nPCT：变化百分比\r\n默认值：ABS"
+          nullable: true
+        upper:
+          type: number
+          description: "上阈值\r\n默认值：0"
+          format: double
+        lower:
+          type: number
+          description: "下阈值\r\n默认值：与上阈值相同"
+          format: double
+        interval:
+          type: integer
+          description: "点位值订阅时间间隔，单位：秒\r\n默认值：900（15分钟）"
+          format: int32
+      additionalProperties: false
+      description: 点位值变化订阅发起请求
+    TagValue:
+      type: object
+      properties:
+        tag:
+          type: string
+          description: 点位名称
+          nullable: true
+        equipName:
+          type: string
+          description: 设备名称
+          nullable: true
+        val:
+          type: number
+          description: 点位最后更新数值
+          format: double
+          nullable: true
+        ts:
+          type: integer
+          description: 点位最后更新时间
+          format: int64
+          nullable: true
+        quality:
+          "$ref": "#/components/schemas/TagValueQuality"
+      additionalProperties: false
+      description: 点位数据值通用实体
+    TagValueQuality:
+      enum:
+      - Good
+      - Bad
+      - Uncertain
+      type: string
+      description: 点位数据质量通用实体
+    TagWriteRequest:
+      type: object
+      properties:
+        val:
+          type: number
+          description: 修改值
+          format: double
+          nullable: true
+      additionalProperties: false
+      description: 点位值修改请求
+    TokenResponse:
+      type: object
+      properties:
+        access_token:
+          type: string
+          description: 访问令牌
+          nullable: true
+        token_type:
+          type: string
+          description: Token类型
+          nullable: true
+        expires_in:
+          type: integer
+          description: 过期时间
+          format: int32
+      additionalProperties: false
+      description: Token响应报文
+    TrendTagDto:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          description: "点位是否有效\r\n点位对应的VariableTag名称是否满足点位规则，既有Device信息又有指标信息\r\n通过截取点位全称实现"
+        cluster:
+          type: string
+          description: 集群
+          nullable: true
+        equipmentName:
+          type: string
+          description: 设备名称
+          nullable: true
+        equipmentFullName:
+          type: string
+          description: 设备全称(带集群名称)
+          nullable: true
+          readOnly: true
+        tagName:
+          type: string
+          description: "点位名称\r\nTrendTag的点位名称读取的表属性是TAG/NAME\r\nAlarmTag的点位名称读取的表属性是NAME"
+          nullable: true
+        tagFullName:
+          type: string
+          description: 点位全称(带集群名称)
+          nullable: true
+          readOnly: true
+        deviceName:
+          type: string
+          description: "设备名称\r\n设置Equipment:=Cluster+Equipment\r\n未设置Equipment:=DeviceSignature"
+          nullable: true
+          readOnly: true
+        comment:
+          type: string
+          description: 备注
+          nullable: true
+        itemName:
+          type: string
+          description: 附加信息
+          nullable: true
+        unit:
+          type: string
+          description: 数据单位
+          nullable: true
+        samplePeriod:
+          type: integer
+          description: 采样周期
+          format: int32
+        displayMode:
+          type: integer
+          description: "展示类型\r\n注意：这个不是趋势点的固有属性，为了业务操作加的"
+          format: int32
+      additionalProperties: false
+      description: 趋势点位信息
+    TrendTagValue:
+      type: object
+      properties:
+        val:
+          type: number
+          description: 点位最后更新数值
+          format: double
+          nullable: true
+        ts:
+          type: integer
+          description: 点位最后更新时间
+          format: int64
+          nullable: true
+        quality:
+          "$ref": "#/components/schemas/TagValueQuality"
+      additionalProperties: false
+      description: 趋势点位数据
+    VariableTagDto:
+      type: object
+      properties:
+        valid:
+          type: boolean
+          description: "点位是否有效\r\n点位对应的VariableTag名称是否满足点位规则，既有Device信息又有指标信息\r\n通过截取点位全称实现"
+        cluster:
+          type: string
+          description: 集群
+          nullable: true
+        equipmentName:
+          type: string
+          description: 设备名称
+          nullable: true
+        equipmentFullName:
+          type: string
+          description: 设备全称(带集群名称)
+          nullable: true
+          readOnly: true
+        tagName:
+          type: string
+          description: "点位名称\r\nTrendTag的点位名称读取的表属性是TAG/NAME\r\nAlarmTag的点位名称读取的表属性是NAME"
+          nullable: true
+        tagFullName:
+          type: string
+          description: 点位全称(带集群名称)
+          nullable: true
+          readOnly: true
+        deviceName:
+          type: string
+          description: "设备名称\r\n设置Equipment:=Cluster+Equipment\r\n未设置Equipment:=DeviceSignature"
+          nullable: true
+          readOnly: true
+        comment:
+          type: string
+          description: 备注
+          nullable: true
+        itemName:
+          type: string
+          description: 附件信息
+          nullable: true
+        unit:
+          type: string
+          description: 数据单位
+          nullable: true
+      additionalProperties: false
+      description: "参数点位\r\n获取实时数据的点位"
+    WaveformDataBundleResponse:
+      type: object
+      properties:
+        startPQEvent:
+          type: boolean
+          description: ''
+        endPQEvent:
+          type: boolean
+          description: ''
+        isPQEventOfInterest:
+          type: boolean
+          description: ''
+        source:
+          "$ref": "#/components/schemas/AlarmDataSource"
+        series:
+          type: array
+          items:
+            "$ref": "#/components/schemas/WaveformDataBundleSeries"
+          description: 数据序列
+          nullable: true
+        timeOfFirstTriggerUtc:
+          type: string
+          description: 首次触发utc时间
+          format: date-time
+        timeOfFirstPointUtc:
+          type: string
+          description: 首次点utc时间
+          format: date-time
+        timeOfLastPointUtc:
+          type: string
+          description: 末次点utc时间
+          format: date-time
+        timestampsOffsetFromFirstPoint:
+          type: boolean
+          description: 距首次点时间差
+        samplingFrequency:
+          type: number
+          description: 采样频率
+          format: float
+        lineFrequency:
+          type: number
+          description: 线频率
+          format: float
+      additionalProperties: false
+      description: 故障录波响应数据
+    WaveformDataBundleSeries:
+      type: object
+      properties:
+        channelLabel:
+          type: string
+          description: 通道标签
+          nullable: true
+        channelLabelInvariant:
+          type: string
+          description: ''
+          nullable: true
+        waveformId:
+          type: string
+          description: 故障录波id
+          nullable: true
+        phase:
+          type: number
+          description: ''
+          format: float
+        dataArray:
+          type: array
+          items:
+            type: array
+            items:
+              type: number
+              format: float
+          description: 故障录波数据数组
+          nullable: true
+      additionalProperties: false
+      description: 告警序列数据
+  securitySchemes:
+    Bearer:
+      type: apiKey
+      description: 'JWT Authorization header using the Bearer scheme. Example: "access_token:
+        {token}"'
+      name: access_token
+      in: header
+security:
+- Bearer: []

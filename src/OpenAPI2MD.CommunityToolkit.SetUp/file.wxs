@@ -1,0 +1,35 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Wix xmlns="http://schemas.microsoft.com/wix/2006/wi">
+    <Fragment>
+        <DirectoryRef Id="INSTALLLOCATION">
+            <Component Id="cmpA7918991BF6A797AC1AC8E244B90EF6B" Guid="{7D9D3B0E-CCA3-4985-BD32-E89FC87B8470}">
+                <File Id="filB04CEAAEC4818948A7EEC9C226427F54" KeyPath="yes" Source="$(var.BasePath)\NOTICE.TXT" />
+            </Component>
+            <Component Id="cmp5E2F500CE4D980711BC80539A8005361" Guid="{C6CAD85E-FEA1-4268-B530-0F3C885A2F72}">
+                <File Id="fil7C8CFBB633046AD495BF0C15656BD21E" KeyPath="yes" Source="$(var.BasePath)\openapi.yaml" />
+            </Component>
+            <Component Id="cmpA5DB0D8D0BA44EB9A59F99DBA123F0F7" Guid="{F192D28F-D121-431A-8F45-4CE3D90A92BC}">
+                <File Id="fil9EB972BD5379D2F368E298EFD27D44F9" KeyPath="yes" Source="$(var.BasePath)\OpenAPI2MD.CommunityToolkit.pdb" />
+            </Component>
+            <Component Id="cmp48708862DE6E456AA582CC86EE7E243C" Guid="{70345CF8-FF15-4A9B-9E60-435E3FF2FBFD}">
+                <File Id="filD8DF58010A7EB68DE090A61785DE0CDF" KeyPath="yes" Source="$(var.BasePath)\OpenApi2Word.CommunityToolkit.pdb" />
+            </Component>
+            <Component Id="cmp90CAF8F8DB86C449775E400D409E45B7" Guid="{4EF88806-1661-4F47-9747-7729501645FB}">
+                <File Id="filE217E3D2661BD59EDC56EF4E9C13EB8E" KeyPath="yes" Source="$(var.BasePath)\Swagger2Doc.exe" />
+            </Component>
+            <Component Id="cmpC7CA17EEED32BAB3E6E6730040F28F9C" Guid="{95A19024-8341-46A8-9B46-7F4D6F96B6DF}">
+                <File Id="fil83CFAB5714B84CE9EBE16313EB494C16" KeyPath="yes" Source="$(var.BasePath)\Swagger2Doc.pdb" />
+            </Component>
+        </DirectoryRef>
+    </Fragment>
+    <Fragment>
+        <ComponentGroup Id="ScanAppFiles">
+            <ComponentRef Id="cmpA7918991BF6A797AC1AC8E244B90EF6B" />
+            <ComponentRef Id="cmp5E2F500CE4D980711BC80539A8005361" />
+            <ComponentRef Id="cmpA5DB0D8D0BA44EB9A59F99DBA123F0F7" />
+            <ComponentRef Id="cmp48708862DE6E456AA582CC86EE7E243C" />
+            <ComponentRef Id="cmp90CAF8F8DB86C449775E400D409E45B7" />
+            <ComponentRef Id="cmpC7CA17EEED32BAB3E6E6730040F28F9C" />
+        </ComponentGroup>
+    </Fragment>
+</Wix>
